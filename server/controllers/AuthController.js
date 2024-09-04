@@ -70,3 +70,24 @@ export const login = async(req, res, next) => {
         return res.status(500).send("Internal Server Error");
     }
 }
+
+export const getUserInfo = async(req, res, next) => {
+    try{
+        
+        // return res.status(200).json({
+        //     user: {
+        //         id:user.id,
+        //         email: user.email,
+        //         profileSetup: user.profileSetup,
+        //         firstName: user.firstName,
+        //         lastName: user.lastName,
+        //         image: user.image,
+        //         color: user.color,
+        //     }
+        // })
+
+    } catch(error){
+        console.log(error);
+        return res.status(500).send("Internal Server Error");
+    }
+}

@@ -5,7 +5,7 @@ import { defineConfig } from "vite"
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    //esling-disable-next-line no-under
+    //eslint-disable-next-line no-under
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
