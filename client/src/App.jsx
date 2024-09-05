@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import { Button } from "./components/ui/button";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import Auth from "./pages/auth";
 import Chat from "./pages/chat";
@@ -19,7 +16,8 @@ const PrivateRoute = ({ children }) => {
 const AuthRoute = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
-  return isAuthenticated ? children : <Navigate to="/chat" />;
+  console.log(isAuthenticated);
+  return isAuthenticated ? <Navigate to="/chat"/>  : children;
 };
 
 function App() {
@@ -32,11 +30,23 @@ function App() {
         const response = await apiClient.get(GET_USER_INFO, {
           withCredentials: true,
         });
-        console.log({ response });
+        // console.log(response);
+        if (response.status == 200 && response.data.id) {
+          // console.log("hey");
+          setUserInfo(response.data);
+        } else {
+          // console.log("Hee")
+          setUserInfo(undefined);
+        }
       } catch (error) {
-        console.log({ error });
+        console.error("Failed to fetch user data:", error);
+        setUserInfo(null);
+      } finally {
+        setLoading(false);
       }
     };
+
+    // Fetch user data if not already available
     if (!userInfo) {
       getUserData();
     } else {
@@ -49,38 +59,35 @@ function App() {
   }
 
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/auth"
-            element={
-              <AuthRoute>
-                <Auth />
-              </AuthRoute>
-            }
-          />
-          {/* This is use for wildcard path where developer hasnot design the element but user intenally or unintenally go to the undefined route */}
-          <Route path="*" element={<Navigate to="/auth" />} />
-          <Route
-            path="/chat"
-            element={
-              <PrivateRoute>
-                <Chat />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/auth"
+          element={
+            <AuthRoute>
+              <Auth />
+            </AuthRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/auth" />} />
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute>
+              <Chat />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

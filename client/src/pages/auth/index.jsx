@@ -47,17 +47,23 @@ const Auth = () => {
 
   const handleLogin = async () => {
     // Implement login logic here
-    if (validateLogin()) {
-      const response = await apiClient.post(
-        LOGIN_ROUTE,
-        { email, password },
-        { withCredentials: true }
-      );
-      if (response.data.user.id) {
-        setUserInfo(response.data.user);
-        if (response.data.user.profileSetup) navigate("/chat");
-        else navigate("/profile");
+    e.preventDefault();
+    try {
+      if (validateLogin()) {
+        const response = await apiClient.post(
+          LOGIN_ROUTE,
+          { email, password },
+          { withCredentials: true }
+        );
+        // console.log(response);
+        if (response.data.user.id) {
+          setUserInfo(response.data);
+          if (response.data.user.profileSetup) navigate("/chat");
+          else navigate("/profile");
+        }
       }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -75,7 +81,7 @@ const Auth = () => {
         }
       );
       if (response.status === 201) {
-        setUserInfo(response.data.user);
+        setUserInfo(response.data);
         navigate("/profile");
         // Redirect or reset form as needed
       } else {
@@ -89,15 +95,17 @@ const Auth = () => {
 
   return (
     <div className="h-[100vh] w-[100vw] flex items-center justify-center">
-      <div className="h-[80vh] bg-white border-2 border-white text-opacity-90 shadow-2xl w-[80vw] md:w-[90vw] lg:w-[70vw] xl: [60vw] rounded-3xl grid xl:grid-cols-2">
-        <div className="flex items-center justify-center flex-col">
-          <div className="flex items-center justify-center">
-            <h1 className="text-5xl font-bold md:text-6xl">Welcome</h1>
-            <img src={Victory} alt="Victory Emoji" className="h-[100px]" />
+      <div className="h-[80vh] bg-white border-2 border-white text-opacity-90 shadow-2xl w-[80vw] md:w-[90vw] lg:w-[70vw] xl:w-[60vw] rounded-3xl grid xl:grid-cols-2">
+        <div className="flex items-center justify-center flex-col gap-10">
+          <div className="flex items-center justify-center flex-col">
+            <div className="flex items-center justify-center">
+              <h1 className="text-5xl font-bold md:text-6xl">Welcome</h1>
+              <img src={Victory} alt="Victory Emoji" className="h-[100px]" />
+            </div>
+            <p className="font-medium text-center">
+              Fill in the details to get started with the best chat app!
+            </p>
           </div>
-          <p className="font-medium text-center">
-            Fill in the details to get started with the best chat app!
-          </p>
           <div className="flex items-center justify-center w-full">
             <Tabs className="w-3/4" defaultValue="login">
               <TabsList className="bg-transparent rounded-none w-full flex">

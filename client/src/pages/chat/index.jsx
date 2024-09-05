@@ -12,7 +12,7 @@ const Chat = () => {
       toast('Please setup profile to continue.');
       navigate('/profile');
     }
-  })
+  },[userInfo, navigate])
   return (
     <div>Chat</div>
   )

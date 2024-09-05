@@ -14,8 +14,10 @@ const databaseURL = process.env.DATABASE_URL;
 app.use(cors({
     origin: [process.env.ORIGIN],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true
+    credentials: true,
 }));
+
+app.use("/upload/profiles", express.static("uploads/profiles"));
 
 
 app.use(cookieParser());
@@ -25,7 +27,7 @@ app.use('/api/auth', authRoutes);
 mongoose.connect(databaseURL).then(() => {
     console.log("Database connected successfully..");
 }).catch((err) =>{
-    console.log(err);
+    console.log(err.message);
 }) 
 
 
