@@ -1,29 +1,49 @@
+import { useSocket } from "@/context/SocketContext";
+import { useAppStore } from "@/store";
 import EmojiPicker from "emoji-picker-react";
 import React, { useState, useRef, useEffect } from "react";
 import { GrAttachment } from "react-icons/gr";
 import { IoSend } from "react-icons/io5";
 import { RiEmojiStickerLine } from "react-icons/ri";
+
 const MessageBar = () => {
   const emojiRef = useRef();
+  const socket = useSocket();
   const [message, setMessage] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
-
-  useEffect(()=> {
+  const { selectedChatType, selectedChatData, userInfo } = useAppStore();
+  useEffect(() => {
     function handleClickOutside(event) {
-        if(emojiRef.current && !emojiRef.current.contains(event.target)) {
-            setEmojiPickerOpen(false);
-        }
+      if (emojiRef.current && !emojiRef.current.contains(event.target)) {
+        setEmojiPickerOpen(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return() => {
-        document.removeEventListener("mousedown", handleClickOutside);
-    }
-  },[emojiRef])
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [emojiRef]);
 
   const handleAddEmoji = (emoji) => {
     setMessage((msg) => msg + emoji.emoji);
   };
-  const handleSendMessage = async () => {};
+  const handleSendMessage = async () => {
+    if (!socket) {
+      console.error("Socket not initialized");
+      return;
+    }
+    console.log("hey");
+    if (selectedChatType === "contact") {
+      // console.log("hey");
+      socket.emit("sendMessage", {
+        sender: userInfo.id,
+        content: message,
+        recipient: selectedChatData._id,
+        messageType: "text",
+        fileUrl: undefined,
+      });
+    }
+  };
 
   return (
     <div className="h-[10vh] bg-[#1c1d25] flex justify-center items-center px-8 mb-6 gap-6">

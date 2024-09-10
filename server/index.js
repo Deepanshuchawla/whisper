@@ -3,8 +3,10 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
+import http from "http"; // Import the http module
 import authRoutes from "./routes/AuthRoutes.js";
 import contactsRoutes from "./routes/ContactRoutes.js";
+import setupSocket from "./socket.js"; // Assuming setupSocket is defined correctly
 
 dotenv.config();
 
@@ -20,24 +22,29 @@ app.use(cors({
 
 app.use("/uploads/profiles", express.static("uploads/profiles"));
 
-
 app.use(cookieParser());
 app.use(express.json());
+
 app.use('/api/auth', authRoutes);
 app.use('/api/contacts', contactsRoutes);
 
 mongoose.connect(databaseURL).then(() => {
     console.log("Database connected successfully..");
-}).catch((err) =>{
+}).catch((err) => {
     console.log(err.message);
-}) 
-
+});
 
 app.get('/', (req, res) => {
     res.send("Hey there");
-})
+});
 
+// Create an HTTP server and wrap the Express app
+const server = http.createServer(app);
 
-app.listen(port, () => {
+// Set up the socket
+setupSocket(server);
+
+// Start listening on the specified port
+server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
-})
+});
