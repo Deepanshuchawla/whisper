@@ -47,7 +47,7 @@ const Auth = () => {
 
   const handleLogin = async () => {
     // Implement login logic here
-    e.preventDefault();
+    // e.preventDefault();
     try {
       if (validateLogin()) {
         const response = await apiClient.post(
