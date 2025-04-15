@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
-import { useNavigate } from "react-router-dom";
+import { redirect, replace, useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store";
 
 const Auth = () => {
@@ -58,8 +58,10 @@ const Auth = () => {
         // console.log(response);
         if (response.data.user.id) {
           setUserInfo(response.data);
-          if (response.data.user.profileSetup) navigate("/chat");
-          else navigate("/profile");
+          if (response.data.user.profileSetup) {
+            navigate("/chat");
+            console.log("login chat");
+          } else navigate("/profile");
         }
       }
     } catch (err) {
@@ -80,10 +82,25 @@ const Auth = () => {
           withCredentials: true,
         }
       );
+
+      // Debugging the response
+      console.log(response.data);
+
       if (response.status === 201) {
         setUserInfo(response.data);
-        navigate("/profile");
-        // Redirect or reset form as needed
+
+        // If profile is already set up, navigate to chat, else to profile setup
+        if (response.data.user.profileSetup) {
+          console.log("hey");
+          navigate("/chat", {
+            replace: true,
+          });
+        } else {
+          console.log("hey2");
+          console.log("profile");
+          window.location.replace("/profile");
+          // replace("/profile");
+        }
       } else {
         toast.error("Signup failed. Please try again.");
       }

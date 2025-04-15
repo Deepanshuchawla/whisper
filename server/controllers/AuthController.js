@@ -171,7 +171,7 @@ export const logout = async (req, res, next) => {
     
     return res.status(200).send("Logout Successful.");
   } catch (error) {
-    console.log(error);
+    console.log(error);36
     return res.status(500).send("Internal Server Error");
   }
 };

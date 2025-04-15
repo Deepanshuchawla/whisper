@@ -39,8 +39,8 @@ export const getUserChannels = async (req, res, next) => {
     const userId = new mongoose.Types.ObjectId(req.userId);
     const channels = await Channel.find({
       $or: [{ admin: userId }, { members: userId }],
-    }).sort({ updatedAt: -1 });  // Fixed typo here
-    return res.status(200).json({ channels });  // Changed status code to 200
+    }).sort({ updatedAt: -1 });  
+    return res.status(200).json({ channels })
   } catch (error) {
     console.log(error);
     return res.status(500).send("Internal Server Error");
